@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wireless Earbuds Shopping Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* T1 AI source disclosure — deliberately prominent source cue */
+.ai-source-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0 11px;
+  padding: 8px 14px;
+  border: 2px solid #173a5c;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #173a5c;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(23,58,92,.16);
+}
+.ai-source-disclosure svg {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+}
+
+.explainer-title-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.explainer-title-row h2 {
+  margin-bottom: 0 !important;
+}
+.explainer-title-row .ai-source-disclosure {
+  margin: 0 !important;
+}
+@media (max-width: 760px) {
+  .explainer-title-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+
+/* Final T1 heading/disclosure alignment fix */
+.assistance {
+  position: relative;
+}
+
+/* Keep any decorative orange icon clear of the heading text. */
+.assistance::before {
+  left: 28px !important;
+  top: 30px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.assistance .eyebrow.light,
+.assistance .explainer-title-row,
+.assistance > h2 {
+  position: relative;
+  z-index: 2;
+}
+
+/* Reserve left space so the decorative icon never covers the title. */
+.assistance .eyebrow.light,
+.assistance .explainer-title-row {
+  margin-left: 76px !important;
+}
+
+.explainer-title-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 16px !important;
+  flex-wrap: nowrap !important;
+}
+
+.explainer-title-row h2 {
+  margin: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.explainer-title-row .ai-source-disclosure {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  gap: 7px !important;
+  border-width: 2px !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.explainer-title-row .ai-source-disclosure svg {
+  width: 22px !important;
+  height: 22px !important;
+  flex: 0 0 22px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance::before {
+    left: 18px !important;
+    top: 24px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+  .assistance .eyebrow.light,
+  .assistance .explainer-title-row {
+    margin-left: 58px !important;
+  }
+  .explainer-title-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .explainer-title-row .ai-source-disclosure {
+    font-size: 15px !important;
+  }
+}
+
+
+/* T1 final: preserve original T0 explainer layout + AI source badge */
+.assistance {
+  position: relative !important;
+}
+
+.assistance::before {
+  left: 28px !important;
+  top: 38px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.assistance .eyebrow.light {
+  margin-left: 76px !important;
+}
+
+.assistance .explainer-title-row {
+  margin-left: 76px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  flex-wrap: nowrap !important;
+}
+
+.assistance .explainer-title-row h2 {
+  margin: 0 !important;
+  line-height: 1.12 !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 5px 9px !important;
+  border: 2px solid #173a5c !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #173a5c !important;
+  font-size: 15px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 20px !important;
+}
+
+.assistance .assist-intro {
+  margin-left: 76px !important;
+  margin-top: 5px !important;
+  max-width: none !important;
+}
+
+.assistance .explain-grid {
+  margin-top: 14px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance::before {
+    left: 18px !important;
+    top: 30px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+  .assistance .eyebrow.light,
+  .assistance .explainer-title-row,
+  .assistance .assist-intro {
+    margin-left: 58px !important;
+  }
+  .assistance .explainer-title-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .assistance .explainer-title-row .ai-source-disclosure {
+    font-size: 14px !important;
+  }
+}
+
+
+/* FINAL T1 SPECIFICATION EXPLAINER — approved T0-style layout */
+.assistance {
+  position: relative !important;
+  display: block !important;
+  padding: 26px 28px 22px 104px !important;
+  min-height: 0 !important;
+}
+
+/* Decorative orange icon: fixed at the left, never overlapping text */
+.assistance::before {
+  left: 30px !important;
+  top: 38px !important;
+  width: 58px !important;
+  height: 58px !important;
+  z-index: 1 !important;
+}
+
+/* Undo prior offsets that pushed content into separate columns */
+.assistance .eyebrow.light,
+.assistance .explainer-title-row,
+.assistance .assist-intro,
+.assistance .explain-grid {
+  margin-left: 0 !important;
+  max-width: none !important;
+}
+
+/* Eyebrow above the title, exactly as in T0 */
+.assistance .eyebrow.light {
+  display: block !important;
+  margin-bottom: 5px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Title + T1 source disclosure on one line */
+.assistance .explainer-title-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+}
+
+.assistance .explainer-title-row h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.12 !important;
+}
+
+/* Compact but clearly visible T1 badge */
+.assistance .explainer-title-row .ai-source-disclosure {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  padding: 6px 11px !important;
+  border: 2px solid #173a5c !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #173a5c !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure svg {
+  width: 21px !important;
+  height: 21px !important;
+  flex: 0 0 21px !important;
+}
+
+/* Intro is directly under the title row and spans naturally */
+.assistance .assist-intro {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 5px !important;
+  margin-bottom: 14px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* A/B/C comparison occupies the full row below the header */
+.assistance .explain-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.assistance .explain-grid > div {
+  min-width: 0 !important;
+}
+
+@media (max-width: 760px) {
+  .assistance {
+    padding: 22px 16px 18px 72px !important;
+  }
+  .assistance::before {
+    left: 16px !important;
+    top: 28px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .assistance .explainer-title-row {
+    gap: 8px !important;
+  }
+  .assistance .explainer-title-row .ai-source-disclosure {
+    font-size: 14px !important;
+    padding: 5px 8px !important;
+  }
+  .assistance .explain-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* T1 alignment/spacing refinement */
+.assistance .assist-intro {
+  margin-top: 3px !important;
+  margin-bottom: 7px !important;
+  line-height: 1.35 !important;
+}
+
+/* Let the explainer comparison align with the page/product-card edges rather than
+   with the indented header text. */
+.assistance .explain-grid {
+  width: auto !important;
+  margin-left: -76px !important;
+  margin-right: 0 !important;
+  margin-top: 7px !important;
+}
+
+/* Keep comparable inner padding while preserving three equal columns. */
+.assistance .explain-grid > div {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance .assist-intro {
+    margin-bottom: 7px !important;
+  }
+  .assistance .explain-grid {
+    margin-left: -56px !important;
+    margin-top: 7px !important;
+  }
+}
+
+
+/* Tighten only the space below the Specification Explainer intro */
+.assistance .assist-intro {
+  margin-bottom: 2px !important;
+}
+.assistance .explain-grid {
+  margin-top: 2px !important;
+}
+
+
+/* FINAL T2 — approved mockup layout */
+.assistance {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 43% 57% !important;
+  grid-template-areas:
+    "left process"
+    "boxes boxes" !important;
+  column-gap: 0 !important;
+  row-gap: 16px !important;
+  padding: 28px 28px 22px 104px !important;
+}
+
+/* Group the existing eyebrow + title visually in the left half */
+.assistance .eyebrow.light {
+  position: absolute !important;
+  left: 104px !important;
+  top: 28px !important;
+  margin: 0 !important;
+  z-index: 2 !important;
+}
+.assistance .explainer-title-row {
+  grid-area: left !important;
+  margin: 30px 24px 0 0 !important;
+  width: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 14px !important;
+}
+
+/* Process disclosure on the SAME horizontal band, to the right */
+.assistance .ai-process-disclosure {
+  grid-area: process !important;
+  align-self: center !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  margin: 0 !important;
+  padding: 4px 0 4px 28px !important;
+  border-left: 2px solid #d99a5b !important;
+  min-width: 0 !important;
+}
+.assistance .ai-process-icon {
+  width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  color: #1f5f9d !important;
+  font-size: 23px !important;
+}
+.assistance .ai-process-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  line-height: 1.32 !important;
+  min-width: 0 !important;
+}
+.assistance .ai-process-copy strong {
+  color: #0d3159 !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+.assistance .ai-process-copy span {
+  color: #365d84 !important;
+  font-size: 15px !important;
+}
+
+/* Three boxes span the panel below, like T1 / approved mockup */
+.assistance .explain-grid {
+  grid-area: boxes !important;
+  width: auto !important;
+  margin: 0 0 0 -76px !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+}
+
+/* Preserve orange icon at far left */
+.assistance::before {
+  left: 30px !important;
+  top: 38px !important;
+  width: 58px !important;
+  height: 58px !important;
+}
+
+/* Stack gracefully on narrower screens */
+@media (max-width: 1050px) {
+  .assistance {
+    display: block !important;
+  }
+  .assistance .eyebrow.light {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    margin: 0 !important;
+  }
+  .assistance .explainer-title-row {
+    margin: 4px 0 0 0 !important;
+    flex-wrap: wrap !important;
+  }
+  .assistance .ai-process-disclosure {
+    margin-top: 14px !important;
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+  .assistance .explain-grid {
+    margin-top: 14px !important;
+  }
+}
+
+/* T2 phone fix: match T1 mobile layout (single-column explainer) */
+@media (max-width: 760px) {
+  .assistance {
+    padding: 22px 16px 18px 72px !important;
+  }
+  .assistance::before {
+    left: 16px !important;
+    top: 28px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .assistance .explain-grid {
+    grid-template-columns: 1fr !important;
+    margin-left: -56px !important;
+  }
+}
+
+</style>
+<link rel="stylesheet" href="theme-teal.css">
+</head>
+<body>
+<header class="site-header">
+ <div><div class="brand">SoundChoice</div><div class="tagline">Clear Sound. A Better You.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>Wireless<br>Earbuds</h1>
+  <p>Imagine that you are shopping for wireless earbuds for commuting, travel, and everyday use. <strong><span class="desktop-priority-text">Your priorities for this purchase are listed to the right.</span><span class="mobile-priority-text">Your priorities for this purchase are listed below.</span></strong> Based on these priorities, review the product options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="16" height="10" rx="2"/><path d="M21.5 11v2"/><path d="M6 10.5v3M9.5 10.5v3M13 10.5v3"/></svg></i>Battery life</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7" width="18" height="12" rx="5"/><path d="M3 11.5h18"/><circle cx="12" cy="15.3" r=".9" fill="currentColor" stroke="none"/></svg></i>Case portability/weight</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M3 3l18 18"/></svg></i>Noise cancellation</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$150 or less</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="eyebrow">AVAILABLE PRODUCTS</div><h2>Compare three options</h2>
+ <div class="product-grid">
+  <article class="product-card"><img src="assets/earbuds-a.jpg" alt="Alvena"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Alvena</h3><div class="price">$139</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this item</h4>
+<ul>
+<li><strong>Everyday wireless listening:</strong> True wireless in-ear earbuds designed for music, calls, commuting, and everyday listening.</li>
+<li><strong>Battery life:</strong> Provides up to 10 hours of listening on a single charge.</li>
+<li><strong>Portable charging case:</strong> Includes a USB-C charging case for storing and charging the earbuds between uses.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 45 g.</li>
+<li><strong>Available colors:</strong> White, Graphite, and Navy.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Great for my commute</h5><div class="review-meta">Maya R. · Verified Purchase</div><p>I use these on the train almost every day. The noise cancellation cuts down the steady train noise a lot, and I usually get through the workday without thinking about the battery. They felt a little snug the first couple of days, but changing the ear tips helped.</p></article>
+<article><div class="stars">★★★★★</div><h5>Battery has been really dependable</h5><div class="review-meta">Chris T. · Verified Purchase</div><p>I bought these mostly for travel and podcasts. I can use them on and off all day before I need to put them back in the case. Music sounds clear and the connection to my phone has been stable.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Very good, case could be smaller</h5><div class="review-meta">Jordan K. · Verified Purchase</div><p>The earbuds themselves are comfortable and outside noise is noticeably quieter with ANC on. My only complaint is that the case takes up a little more pocket space than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good sound and easy setup</h5><div class="review-meta">Nina P. · Verified Purchase</div><p>Pairing was quick and I like the sound for both music and calls. I wore them for a two-hour flight without a problem. Touch controls took me a little while to get used to.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/earbuds-b.jpg" alt="Belora"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Belora</h3><div class="price">$119</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.6 <span>Customer rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this item</h4>
+<ul>
+<li><strong>Wireless audio for everyday use:</strong> Compact true wireless earbuds designed for listening to music, podcasts, and taking calls throughout the day.</li>
+<li><strong>Battery life:</strong> Provides up to 7 hours of listening on a single charge.</li>
+<li><strong>Compact charging case:</strong> Comes with a USB-C charging case designed for easy storage when the earbuds are not in use.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 34 g.</li>
+<li><strong>Available colors:</strong> White, Black, and Sage.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Light and comfortable</h5><div class="review-meta">Alex M. · Verified Purchase</div><p>These are some of the lighter earbuds I have owned. I wear them while working and they do not bother my ears. The case is compact too, which is probably my favorite part.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good everyday earbuds</h5><div class="review-meta">Sam D. · Verified Purchase</div><p>Sound is good for podcasts and casual music, and they connect quickly when I take them out of the case. Noise cancellation helps in the office, but I can still hear more around me on the subway than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Comfortable, battery is okay</h5><div class="review-meta">Taylor B. · Verified Purchase</div><p>I really like the fit and can keep them in for a long time. Battery has been enough for my normal day, although on longer travel days I end up using the charging case.</p></article>
+<article><div class="stars">★★★★★</div><h5>Easy to carry everywhere</h5><div class="review-meta">Renee L. · Verified Purchase</div><p>I wanted something small for my bag and these have worked well. Calls have been clear and the earbuds stay in place when I walk. Setup was simple.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/earbuds-c.jpg" alt="Corvia"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Corvia</h3><div class="price">$149</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this item</h4>
+<ul>
+<li><strong>Versatile wireless earbuds:</strong> True wireless in-ear earbuds designed for music, calls, travel, and general everyday use.</li>
+<li><strong>Battery life:</strong> Provides up to 8 hours of listening on a single charge.</li>
+<li><strong>USB-C charging case:</strong> Includes a portable case that stores and recharges the earbuds between listening sessions.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 41 g.</li>
+<li><strong>Available colors:</strong> White, Slate Blue, and Black.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Fine for travel</h5><div class="review-meta">Daniel S. · Verified Purchase</div><p>I used these on two flights recently and was happy with them overall. The noise cancellation takes some of the edge off the cabin noise, and the battery lasted through the shorter flight, though I had to put them back in the case partway through the longer one.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Solid sound, slightly heavier fit</h5><div class="review-meta">Priya N. · Verified Purchase</div><p>Music sounds detailed and the wireless connection has been reliable. They feel a little heavier in my ears than my old pair, but the fit is secure once I get them positioned.</p></article>
+<article><div class="stars">★★★★★</div><h5>Works well in coffee shops</h5><div class="review-meta">Morgan E. · Verified Purchase</div><p>I use them while studying and the ANC reduces some of the constant background hum. Battery life has been enough for a few hours at a time.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good features, case is not tiny</h5><div class="review-meta">Jamie W. · Verified Purchase</div><p>Pairing is fast and I have had no connection issues. I like the overall sound and noise reduction. The charging case is fine in a bag, but I would not call it especially pocket-friendly.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+<section class="assistance">
+ <div class="eyebrow light">SHOPPING ASSISTANCE</div>
+ <div class="explainer-title-row">
+  <h2>Specification Explainer</h2>
+  <div class="ai-source-disclosure" aria-label="Generated by AI">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+   <rect x="5" y="7" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+   <path d="M12 4v3M9 4h6M3.5 11H5M19 11h1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+   <circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>
+   <path d="M9 15h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+  <span>Generated by AI</span>
+ </div>
+ </div>
+
+ <div class="ai-process-disclosure">
+   <div class="ai-process-icon" aria-hidden="true">⚙</div>
+   <div class="ai-process-copy">
+     <strong>How the explanation was created</strong>
+     <span>The AI examined each product’s technical specifications and translated selected technical values into practical descriptions of what they may mean in everyday use.</span>
+   </div>
+ </div>
+
+ <div class="explain-grid">
+  <div><b>Alvena</b><span><strong>Noise cancellation — 42 dB ANC:</strong> Provides strong reduction of steady background noise, including noise commonly encountered during train and airplane travel.<br><strong>IP rating — IP55:</strong> Resists dust, sweat, and light rain.</span></div>
+  <div><b>Belora</b><span><strong>Noise cancellation — 30 dB ANC:</strong> Provides moderate reduction of steady background noise, such as office hum, air conditioning, and some commuting noise.<br><strong>IP rating — IPX4:</strong> Resists sweat and light rain; no dust rating.</span></div>
+  <div><b>Corvia</b><span><strong>Noise cancellation — 34 dB ANC:</strong> Provides noticeable reduction of steady background noise, including common public-transit and other continuous environmental sounds.<br><strong>IP rating — IP54:</strong> Resists some dust, sweat, and light rain.</span></div>
+ </div>
+</section>
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PRODUCT INFORMATION</div>
+   <h2>Technical specifications</h2>
+   <p class="spec-intro">Detailed technical specifications are available for all three products, including battery life, active noise cancellation, driver size, Bluetooth version, case weight, and IP rating.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Technical Specifications</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these specifications together with the shopping priorities above and the Specification Explainer when comparing the three options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Specification</th><th>Alvena</th><th>Belora</th><th>Corvia</th></tr></thead>
+  <tbody>
+   <tr><td>Battery</td><td>10 hr</td><td>7 hr</td><td>8 hr</td></tr>
+   <tr><td>ANC</td><td>42 dB</td><td>30 dB</td><td>34 dB</td></tr>
+   <tr><td>Driver</td><td>11 mm</td><td>12 mm</td><td>10 mm</td></tr>
+   <tr><td>Bluetooth</td><td>5.4</td><td>5.3</td><td>5.4</td></tr>
+   <tr><td>Case weight</td><td>45 g</td><td>34 g</td><td>41 g</td></tr>
+   <tr><td>IP rating</td><td>IP55</td><td>IPX4</td><td>IP54</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#E4F3F0;border:1px solid #CFE6E1;color:#3A5560;font-size:14.5px;line-height:1.45"><strong style="color:#10303B">About noise cancellation (ANC):</strong> Active noise cancellation (ANC) is measured in decibels (dB) of outside noise removed. Higher numbers mean more noise is blocked; most wireless earbuds fall between about 25 dB (moderate) and 45 dB (strong). In general, higher ratings reduce steady background noise such as trains, airplanes, and air conditioning more effectively, while lower ratings leave more of that noise audible.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which product would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Alvena</button><button class="choice" data-choice="B">Belora</button><button class="choice" data-choice="C">Corvia</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "Earbuds-interpretive/index_T2.html", "category": "earbuds", "ai_type": "interpretive", "alignment": "aligned", "transparency": "T2", "correct": "A", "lure": "B"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

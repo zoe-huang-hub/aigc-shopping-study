@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Coffee Beans Shopping Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* Final T0: small clearance below orange icon before explainer boxes */
+.assistance .explain-grid {
+  margin-top: 12px !important;
+}
+
+</style>
+<link rel="stylesheet" href="theme-coffee.css">
+</head>
+<body>
+<header class="site-header">
+ <div><div class="brand">Daily Grind</div><div class="tagline">Fresh Coffee, Delivered.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>Coffee<br>Beans</h1>
+  <p>Imagine that you are shopping for whole bean coffee to brew at home every morning. <strong><span class="desktop-priority-text">Your priorities for this purchase are listed to the right.</span><span class="mobile-priority-text">Your priorities for this purchase are listed below.</span></strong> Based on these priorities, review the product options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg></i>Smooth, low-acidity taste</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></i>Freshness</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></i>Value for money</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$20 or less per bag</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="eyebrow">AVAILABLE PRODUCTS</div><h2>Compare three options</h2>
+ <div class="product-grid">
+  <article class="product-card"><img src="assets/coffee-a.svg" alt="Arvana"><div class="product-copy"><div class="option">WHOLE BEAN COFFEE</div><h3>Arvana</h3><div class="price">$15</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this item</h4>
+<ul>
+<li><strong>Single-origin coffee:</strong> 100% Arabica whole beans from the Huila region of Colombia.</li>
+<li><strong>Freshness:</strong> Roasted in small weekly batches and shipped within 7 days of roasting.</li>
+<li><strong>Bag size:</strong> 12 oz (340 g) resealable bag with a one-way freshness valve ($1.25 per oz).</li>
+<li><strong>Brewing:</strong> Suitable for drip, pour-over, French press, and espresso.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Not too bright and not too dark. Smooth enough black, and good with milk.</h5><div class="review-meta">Nicely balanced · Verified Purchase</div><p>Daniel S.</p></article>
+<article><div class="stars">★★★★☆</div><h5>It usually arrives within a week of roasting and tastes the same from bag to bag.</h5><div class="review-meta">Fresh and consistent · Verified Purchase</div><p>Priya N.</p></article>
+<article><div class="stars">★★★★★</div><h5>A reliable, middle-of-the-road coffee for my morning drip.</h5><div class="review-meta">Good everyday coffee · Verified Purchase</div><p>Morgan E.</p></article>
+<article><div class="stars">★★★★☆</div><h5>I like it, but a bigger bag would be better value.</h5><div class="review-meta">Solid, a little pricey · Verified Purchase</div><p>Jamie W.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/coffee-b.svg" alt="Belmira"><div class="product-copy"><div class="option">WHOLE BEAN COFFEE</div><h3>Belmira</h3><div class="price">$16</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this item</h4>
+<ul>
+<li><strong>Single-origin coffee:</strong> 100% Arabica whole beans from the Cerrado Mineiro region of Brazil.</li>
+<li><strong>Freshness:</strong> Roasted to order and shipped within 2 days of roasting.</li>
+<li><strong>Bag size:</strong> 12 oz (340 g) resealable bag with a one-way freshness valve ($1.33 per oz).</li>
+<li><strong>Brewing:</strong> Suitable for drip, pour-over, French press, and espresso.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Finally a coffee that doesn't bother my stomach. It's mellow and rich, even when I drink it black.</h5><div class="review-meta">So smooth · Verified Purchase</div><p>Maya R.</p></article>
+<article><div class="stars">★★★★★</div><h5>The roast date is always just a couple of days before it shows up, and the aroma when I open the bag is amazing.</h5><div class="review-meta">Arrives really fresh · Verified Purchase</div><p>Chris T.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Love the taste, but the 12 oz bag goes fast and it costs more per cup than what I used to buy.</h5><div class="review-meta">Great coffee, a bit pricey · Verified Purchase</div><p>Jordan K.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Works well in my drip machine and my French press. Consistent every morning.</h5><div class="review-meta">My daily brew · Verified Purchase</div><p>Nina P.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/coffee-c.svg" alt="Cordelo"><div class="product-copy"><div class="option">WHOLE BEAN COFFEE</div><h3>Cordelo</h3><div class="price">$14</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.6 <span>Customer rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this item</h4>
+<ul>
+<li><strong>Single-origin coffee:</strong> 100% Arabica whole beans from the Yirgacheffe region of Ethiopia.</li>
+<li><strong>Freshness:</strong> Roasted in larger batches and shipped from stock within 1–2 weeks of roasting. The roast date is printed on the bag.</li>
+<li><strong>Bag size:</strong> 16 oz (454 g) resealable bag, more coffee for the price ($0.88 per oz).</li>
+<li><strong>Brewing:</strong> Suitable for drip, pour-over, French press, and espresso.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>A full pound for this price is hard to beat. One bag lasts me almost a month.</h5><div class="review-meta">Great value · Verified Purchase</div><p>Alex M.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Very bright, almost citrusy. I like it, but my partner finds it too sour first thing in the morning.</h5><div class="review-meta">Bright and lively · Verified Purchase</div><p>Sam D.</p></article>
+<article><div class="stars">★★★★☆</div><h5>The roast date was about two weeks before it arrived. Still good, though not as aromatic as coffee I've had straight from a roaster.</h5><div class="review-meta">Good, but not the freshest · Verified Purchase</div><p>Taylor B.</p></article>
+<article><div class="stars">★★★★★</div><h5>Clean and light. I enjoy it as an afternoon pour-over.</h5><div class="review-meta">Nice for pour-over · Verified Purchase</div><p>Renee L.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+<section class="assistance">
+ <div class="eyebrow light">SHOPPING ASSISTANCE</div>
+ <h2>Specification Explainer</h2>
+ 
+ <div class="explain-grid">
+  <div><b>Arvana</b><span><strong>Roast level — Agtron 60:</strong> Medium roast with balanced acidity and a moderate body.<br><strong>Processing — Honey:</strong> Part of the sticky fruit layer is left on the beans while they dry.</span></div>
+  <div><b>Belmira</b><span><strong>Roast level — Agtron 50:</strong> Light roast with bright, pronounced acidity and a lighter body; some drinkers may find it sharp or tangy.<br><strong>Processing — Natural:</strong> Coffee cherries are dried whole in the sun before the beans are removed.</span></div>
+  <div><b>Cordelo</b><span><strong>Roast level — Agtron 70:</strong> Medium-dark roast with low acidity and a smooth, full body; a mellow cup that is easy to drink every day.<br><strong>Processing — Washed:</strong> The fruit is removed and the beans are washed before drying.</span></div>
+ </div>
+</section>
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PRODUCT INFORMATION</div>
+   <h2>Technical specifications</h2>
+   <p class="spec-intro">Detailed technical specifications are available for all three products, including roast level, origin, growing altitude, processing method, bag size, price per ounce, and roast-to-ship time.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Technical Specifications</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these specifications together with the shopping priorities above and the Specification Explainer when comparing the three options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Specification</th><th>Arvana</th><th>Belmira</th><th>Cordelo</th></tr></thead>
+  <tbody>
+   <tr><td>Roast level (Agtron)</td><td>60</td><td>50</td><td>70</td></tr>
+   <tr><td>Origin</td><td>Colombia (Huila)</td><td>Brazil (Cerrado Mineiro)</td><td>Ethiopia (Yirgacheffe)</td></tr>
+   <tr><td>Growing altitude</td><td>1,700 m</td><td>1,100 m</td><td>2,000 m</td></tr>
+   <tr><td>Processing</td><td>Honey</td><td>Natural</td><td>Washed</td></tr>
+   <tr><td>Bag size</td><td>12 oz</td><td>12 oz</td><td>16 oz</td></tr>
+   <tr><td>Price per ounce</td><td>$1.25</td><td>$1.33</td><td>$0.88</td></tr>
+   <tr><td>Roast to ship</td><td>Within 7 days</td><td>Within 2 days</td><td>1–2 weeks</td></tr>
+   <tr><td>Bean</td><td>100% Arabica</td><td>100% Arabica</td><td>100% Arabica</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#FAF3EC;border:1px solid #EFDCC8;color:#5A4636;font-size:14.5px;line-height:1.45"><strong style="color:#2E1D14">About roast level (Agtron):</strong> The Agtron number is a standard measurement of how darkly coffee beans are roasted. Lower numbers mean darker roasts and higher numbers mean lighter roasts; most coffees fall between about 45 (dark) and 75 (light). In general, darker roasts taste less acidic, with a smoother and fuller body, while lighter roasts taste brighter and more acidic, with a lighter body.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which product would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Arvana</button><button class="choice" data-choice="B">Belmira</button><button class="choice" data-choice="C">Cordelo</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "Coffee-interpretive/index_T0_misalign.html", "category": "coffee", "ai_type": "interpretive", "alignment": "misaligned", "transparency": "T0", "correct": "B", "lure": "C"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

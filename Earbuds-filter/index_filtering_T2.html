@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wireless Earbuds Shopping Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* Final T0: small clearance below orange icon before explainer boxes */
+.assistance .explain-grid {
+  margin-top: 12px !important;
+}
+
+
+.filter-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:4px}
+.filter-heading h2{margin-bottom:0}.filter-message{margin:6px 0 18px;color:#42617f;font-size:16px}
+.all-earbuds-btn{min-width:180px;padding:11px 20px!important;font-size:17px;font-weight:750;color:#173a5c;border-radius:10px}
+.filtering-grid:not(.show-all){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="A"]{grid-column:1}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="B"],.filtering-grid:not(.show-all) .product-card[data-filter-product="C"]{display:none!important}
+.filtering-grid.show-all .product-card{display:flex}
+.all-earbuds-btn[aria-pressed="true"]{background:#244f7a!important;color:#fff!important;border-color:#173a5c!important}
+@media(max-width:760px){.filter-heading{align-items:stretch;flex-direction:column;gap:10px}.all-earbuds-btn{width:100%}.filtering-grid:not(.show-all){grid-template-columns:1fr!important}.filtering-grid:not(.show-all) .product-card[data-filter-product="A"]{grid-column:1}}
+
+
+/* Filtering layout correction: preserve original product-card sizing */
+.filtering-grid {
+  width: 100% !important;
+}
+
+/* Recommended view: A occupies exactly one original card column. */
+.filtering-grid:not(.show-all) {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="A"] {
+  grid-column: 1 / 2 !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* All Earbuds: exact same 3-column geometry as the original page. */
+.filtering-grid.show-all {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.filtering-grid.show-all .product-card {
+  display: flex !important;
+  width: auto !important;
+  max-width: none !important;
+  grid-column: auto !important;
+}
+
+/* Do not allow product images to enlarge in either filtering state. */
+.filtering-grid .product-card > img {
+  width: var(--original-product-image-width, auto);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .filtering-grid:not(.show-all),
+  .filtering-grid.show-all {
+    grid-template-columns: 1fr !important;
+  }
+  .filtering-grid:not(.show-all) .product-card[data-filter-product="A"] {
+    grid-column: 1 !important;
+  }
+}
+
+
+@media (max-width: 760px) {
+  .products {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .products .filter-heading {
+    display: contents !important;
+  }
+  .products .filter-heading > div {
+    order: 1 !important;
+  }
+  .products .filter-message {
+    order: 2 !important;
+  }
+  .products .filtering-grid {
+    order: 3 !important;
+  }
+  .products .all-earbuds-btn {
+    order: 4 !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .all-earbuds-btn {
+    margin-right: clamp(44px, 10vw, 170px) !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+
+  .products .all-earbuds-btn {
+    position: absolute !important;
+    right: 12.5% !important;
+    transform: translateX(50%) !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+  .products .all-earbuds-btn {
+    position: absolute !important;
+    right: auto !important;
+    transform: none !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+/* FINAL desktop alignment: All Earbuds center = Compare Technical Specifications center */
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+  #allEarbudsBtn {
+    position: absolute !important;
+    right: auto !important;
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Recommended view: only Alvena is available in the spec table and decision */
+body.filter-recommended .spec-panel th:nth-child(n+3),
+body.filter-recommended .spec-panel td:nth-child(n+3),
+body.filter-recommended .choice[data-choice="B"],
+body.filter-recommended .choice[data-choice="C"] {
+  display: none !important;
+}
+body.filter-recommended .spec-panel .table-scroll table { min-width: 0 !important; }
+
+/* T1: AI source disclosure next to "Recommended for You" (same look as the explainer study) */
+.rec-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.rec-title-row h2 { margin: 0 !important; }
+.products .ai-source-disclosure {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 11px; border: 2px solid #12485A; border-radius: 8px;
+  background: #fff; color: #12485A;
+  font-size: 16px; font-weight: 800; line-height: 1; white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(18,72,90,.12);
+}
+.products .ai-source-disclosure svg { width: 21px; height: 21px; flex: 0 0 21px; }
+/* Disclosures describe the recommendation, so they are hidden in the All Earbuds view */
+body:not(.filter-recommended) .ai-rec-only { display: none !important; }
+@media (max-width: 760px) {
+  .rec-title-row { gap: 8px; }
+  .products .ai-source-disclosure { font-size: 14px; padding: 5px 8px; }
+}
+
+/* T2: AI process disclosure (same look as the explainer study) */
+.products .ai-process-disclosure {
+  display: flex; align-items: center; gap: 14px;
+  margin: -6px 0 16px; padding: 10px 14px;
+  background: #F4FBF9; border: 1px solid #CFE6E1; border-radius: 10px;
+}
+.products .ai-process-icon {
+  width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center;
+  border-radius: 50%; background: #fff; color: #1E8C7E; font-size: 21px;
+}
+.products .ai-process-copy { display: flex; flex-direction: column; gap: 3px; line-height: 1.32; min-width: 0; }
+.products .ai-process-copy strong { color: #10303B; font-size: 16px; font-weight: 800; }
+.products .ai-process-copy span { color: #3A5560; font-size: 14.5px; }
+@media (max-width: 760px) {
+  .products .ai-process-disclosure { order: 2 !important; margin: 0 0 14px; align-items: flex-start; }
+  .products .ai-process-icon { width: 34px; height: 34px; flex-basis: 34px; font-size: 18px; }
+}
+
+/* Mid-width screens (761-1100px): keep All Earbuds in normal flow so it never overlaps the heading */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .products .filter-heading { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: space-between !important; gap: 12px 20px !important; }
+  #allEarbudsBtn { position: static !important; left: auto !important; transform: none !important; margin: 0 !important; }
+}
+
+</style>
+<link rel="stylesheet" href="theme-teal.css">
+</head>
+<body class="filter-recommended">
+<header class="site-header">
+ <div><div class="brand">SoundChoice</div><div class="tagline">Clear Sound. A Better You.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>Wireless<br>Earbuds</h1>
+  <p>Imagine that you are shopping for wireless earbuds for commuting, travel, and everyday use. <strong><span class="desktop-priority-text">Your priorities for this purchase are listed to the right.</span><span class="mobile-priority-text">Your priorities for this purchase are listed below.</span></strong> Based on these priorities, review the product options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="16" height="10" rx="2"/><path d="M21.5 11v2"/><path d="M6 10.5v3M9.5 10.5v3M13 10.5v3"/></svg></i>Battery life</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="7" width="18" height="12" rx="5"/><path d="M3 11.5h18"/><circle cx="12" cy="15.3" r=".9" fill="currentColor" stroke="none"/></svg></i>Case portability/weight</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M3 3l18 18"/></svg></i>Noise cancellation</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$150 or less</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="filter-heading"><div><div class="eyebrow">SHOPPING ASSISTANCE</div><div class="rec-title-row"><h2 id="productSectionTitle">Recommended for You</h2><div class="ai-source-disclosure ai-rec-only" aria-label="Generated by AI">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+   <rect x="5" y="7" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+   <path d="M12 4v3M9 4h6M3.5 11H5M19 11h1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+   <circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>
+   <path d="M9 15h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+  <span>Generated by AI</span>
+ </div></div></div><button id="allEarbudsBtn" class="all-earbuds-btn" type="button" aria-pressed="false">▦&nbsp;&nbsp;All Earbuds</button></div>
+<p id="filterMessage" class="filter-message">Based on your shopping priorities, the product below is shown as the recommended option.</p>
+<div class="ai-process-disclosure ai-rec-only">
+ <div class="ai-process-icon" aria-hidden="true">⚙</div>
+ <div class="ai-process-copy">
+  <strong>How the recommendation was created</strong>
+  <span>The AI examined each product’s technical specifications, compared them with your shopping priorities and budget, and selected the product that best matches them to show as the recommended option.</span>
+ </div>
+</div>
+ <div class="product-grid filtering-grid">
+  <article class="product-card" data-filter-product="A"><img src="assets/earbuds-a.jpg" alt="Alvena"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Alvena</h3><div class="price">$139</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this item</h4>
+<ul>
+<li><strong>Everyday wireless listening:</strong> True wireless in-ear earbuds designed for music, calls, commuting, and everyday listening.</li>
+<li><strong>Battery life:</strong> Provides up to 10 hours of listening on a single charge.</li>
+<li><strong>Portable charging case:</strong> Includes a USB-C charging case for storing and charging the earbuds between uses.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 45 g.</li>
+<li><strong>Available colors:</strong> White, Graphite, and Navy.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Great for my commute</h5><div class="review-meta">Maya R. · Verified Purchase</div><p>I use these on the train almost every day. The noise cancellation cuts down the steady train noise a lot, and I usually get through the workday without thinking about the battery. They felt a little snug the first couple of days, but changing the ear tips helped.</p></article>
+<article><div class="stars">★★★★★</div><h5>Battery has been really dependable</h5><div class="review-meta">Chris T. · Verified Purchase</div><p>I bought these mostly for travel and podcasts. I can use them on and off all day before I need to put them back in the case. Music sounds clear and the connection to my phone has been stable.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Very good, case could be smaller</h5><div class="review-meta">Jordan K. · Verified Purchase</div><p>The earbuds themselves are comfortable and outside noise is noticeably quieter with ANC on. My only complaint is that the case takes up a little more pocket space than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good sound and easy setup</h5><div class="review-meta">Nina P. · Verified Purchase</div><p>Pairing was quick and I like the sound for both music and calls. I wore them for a two-hour flight without a problem. Touch controls took me a little while to get used to.</p></article>
+</div></div></div></article>
+  <article class="product-card" data-filter-product="B"><img src="assets/earbuds-b.jpg" alt="Belora"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Belora</h3><div class="price">$119</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.6 <span>Customer rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this item</h4>
+<ul>
+<li><strong>Wireless audio for everyday use:</strong> Compact true wireless earbuds designed for listening to music, podcasts, and taking calls throughout the day.</li>
+<li><strong>Battery life:</strong> Provides up to 7 hours of listening on a single charge.</li>
+<li><strong>Compact charging case:</strong> Comes with a USB-C charging case designed for easy storage when the earbuds are not in use.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 34 g.</li>
+<li><strong>Available colors:</strong> White, Black, and Sage.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Light and comfortable</h5><div class="review-meta">Alex M. · Verified Purchase</div><p>These are some of the lighter earbuds I have owned. I wear them while working and they do not bother my ears. The case is compact too, which is probably my favorite part.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good everyday earbuds</h5><div class="review-meta">Sam D. · Verified Purchase</div><p>Sound is good for podcasts and casual music, and they connect quickly when I take them out of the case. Noise cancellation helps in the office, but I can still hear more around me on the subway than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Comfortable, battery is okay</h5><div class="review-meta">Taylor B. · Verified Purchase</div><p>I really like the fit and can keep them in for a long time. Battery has been enough for my normal day, although on longer travel days I end up using the charging case.</p></article>
+<article><div class="stars">★★★★★</div><h5>Easy to carry everywhere</h5><div class="review-meta">Renee L. · Verified Purchase</div><p>I wanted something small for my bag and these have worked well. Calls have been clear and the earbuds stay in place when I walk. Setup was simple.</p></article>
+</div></div></div></article>
+  <article class="product-card" data-filter-product="C"><img src="assets/earbuds-c.jpg" alt="Corvia"><div class="product-copy"><div class="option">WIRELESS EARBUDS</div><h3>Corvia</h3><div class="price">$149</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this item</h4>
+<ul>
+<li><strong>Versatile wireless earbuds:</strong> True wireless in-ear earbuds designed for music, calls, travel, and general everyday use.</li>
+<li><strong>Battery life:</strong> Provides up to 8 hours of listening on a single charge.</li>
+<li><strong>USB-C charging case:</strong> Includes a portable case that stores and recharges the earbuds between listening sessions.</li>
+<li><strong>Charging case weight:</strong> The charging case weighs 41 g.</li>
+<li><strong>Available colors:</strong> White, Slate Blue, and Black.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Fine for travel</h5><div class="review-meta">Daniel S. · Verified Purchase</div><p>I used these on two flights recently and was happy with them overall. The noise cancellation takes some of the edge off the cabin noise, and the battery lasted through the shorter flight, though I had to put them back in the case partway through the longer one.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Solid sound, slightly heavier fit</h5><div class="review-meta">Priya N. · Verified Purchase</div><p>Music sounds detailed and the wireless connection has been reliable. They feel a little heavier in my ears than my old pair, but the fit is secure once I get them positioned.</p></article>
+<article><div class="stars">★★★★★</div><h5>Works well in coffee shops</h5><div class="review-meta">Morgan E. · Verified Purchase</div><p>I use them while studying and the ANC reduces some of the constant background hum. Battery life has been enough for a few hours at a time.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good features, case is not tiny</h5><div class="review-meta">Jamie W. · Verified Purchase</div><p>Pairing is fast and I have had no connection issues. I like the overall sound and noise reduction. The charging case is fine in a bag, but I would not call it especially pocket-friendly.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PRODUCT INFORMATION</div>
+   <h2>Technical specifications</h2>
+   <p class="spec-intro" id="specIntro">Detailed technical specifications are available for <span id="specScope">the product shown above</span>, including battery life, active noise cancellation (ANC), driver size, Bluetooth version, case weight, and IP rating.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Technical Specifications</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these specifications together with the shopping priorities above when comparing the available options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Specification</th><th>Alvena</th><th>Belora</th><th>Corvia</th></tr></thead>
+  <tbody>
+   <tr><td>Battery</td><td>10 hr</td><td>7 hr</td><td>8 hr</td></tr>
+   <tr><td>ANC</td><td>42 dB</td><td>30 dB</td><td>34 dB</td></tr>
+   <tr><td>Driver</td><td>11 mm</td><td>12 mm</td><td>10 mm</td></tr>
+   <tr><td>Bluetooth</td><td>5.4</td><td>5.3</td><td>5.4</td></tr>
+   <tr><td>Case weight</td><td>45 g</td><td>34 g</td><td>41 g</td></tr>
+   <tr><td>IP rating</td><td>IP55</td><td>IPX4</td><td>IP54</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#E4F3F0;border:1px solid #CFE6E1;color:#3A5560;font-size:14.5px;line-height:1.45"><strong style="color:#10303B">About noise cancellation (ANC):</strong> Active noise cancellation (ANC) is measured in decibels (dB) of outside noise removed. Higher numbers mean more noise is blocked; most wireless earbuds fall between about 25 dB (moderate) and 45 dB (strong). In general, higher ratings reduce steady background noise such as trains, airplanes, and air conditioning more effectively, while lower ratings leave more of that noise audible.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which product would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Alvena</button><button class="choice" data-choice="B">Belora</button><button class="choice" data-choice="C">Corvia</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+ const b=document.getElementById('allEarbudsBtn'),g=document.querySelector('.filtering-grid'),h=document.getElementById('productSectionTitle'),m=document.getElementById('filterMessage');
+ if(!b||!g)return;
+ b.addEventListener('click',function(){
+  if(typeof closeAboutPanels==='function')closeAboutPanels();
+  if(typeof closeReviewPanels==='function')closeReviewPanels();
+  document.querySelectorAll('.product-card.active-popup').forEach(function(c){c.classList.remove('active-popup');});
+  const all=g.classList.toggle('show-all'); b.setAttribute('aria-pressed',all?'true':'false');
+  h.textContent=all?'All Earbuds':'Recommended for You';
+  m.textContent=all?'All three available products are shown below.':'Based on your shopping priorities, the product below is shown as the recommended option.';
+  b.innerHTML=all?'★&nbsp;&nbsp;Recommended for You':'▦&nbsp;&nbsp;All Earbuds';
+  document.body.classList.toggle('filter-recommended',!all);
+  var scope=document.getElementById('specScope');
+  if(scope)scope.textContent=all?'all three products':'the product shown above';
+  if(!all){
+   var sel=document.querySelector('.choice.selected');
+   if(sel&&sel.dataset.choice!=='A'){
+    sel.classList.remove('selected');sel.setAttribute('aria-pressed','false');
+    var cb=document.getElementById('continueBtn');if(cb)cb.disabled=true;
+    var cm=document.getElementById('choiceMessage');if(cm)cm.textContent='';
+    if(typeof selectedChoice!=='undefined')selectedChoice=null;
+   }
+  }
+ });
+})();
+</script>
+
+
+<script>
+(function () {
+  const allBtn = document.getElementById('allEarbudsBtn');
+  const specBtn = document.getElementById('specBtn');
+  const heading = document.querySelector('.products .filter-heading');
+
+  if (!allBtn || !specBtn || !heading) return;
+
+  function alignCenters() {
+    if (window.innerWidth <= 760) {
+      allBtn.style.left = '';
+      allBtn.style.transform = '';
+      return;
+    }
+
+    const spec = specBtn.getBoundingClientRect();
+    const parent = heading.getBoundingClientRect();
+
+    // Put the CENTER of All Earbuds at the exact viewport x-coordinate
+    // of the CENTER of Compare Technical Specifications.
+    const specCenterX = spec.left + (spec.width / 2);
+    allBtn.style.left = (specCenterX - parent.left) + 'px';
+    allBtn.style.transform = 'translateX(-50%)';
+  }
+
+  window.addEventListener('load', alignCenters);
+  window.addEventListener('resize', alignCenters);
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(alignCenters);
+  }
+
+  const observer = new ResizeObserver(alignCenters);
+  observer.observe(specBtn);
+  observer.observe(heading);
+
+  requestAnimationFrame(() => requestAnimationFrame(alignCenters));
+})();
+</script>
+
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "Earbuds-filter/index_filtering_T2.html", "category": "earbuds", "ai_type": "filter", "alignment": "aligned", "transparency": "T2", "correct": "A", "lure": "B"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

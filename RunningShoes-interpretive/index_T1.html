@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Running Shoes Shopping Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* T1 AI source disclosure — deliberately prominent source cue */
+.ai-source-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0 11px;
+  padding: 8px 14px;
+  border: 2px solid #173a5c;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #173a5c;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 2px 5px rgba(23,58,92,.16);
+}
+.ai-source-disclosure svg {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+}
+
+.explainer-title-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.explainer-title-row h2 {
+  margin-bottom: 0 !important;
+}
+.explainer-title-row .ai-source-disclosure {
+  margin: 0 !important;
+}
+@media (max-width: 760px) {
+  .explainer-title-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+
+/* Final T1 heading/disclosure alignment fix */
+.assistance {
+  position: relative;
+}
+
+/* Keep any decorative orange icon clear of the heading text. */
+.assistance::before {
+  left: 28px !important;
+  top: 30px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.assistance .eyebrow.light,
+.assistance .explainer-title-row,
+.assistance > h2 {
+  position: relative;
+  z-index: 2;
+}
+
+/* Reserve left space so the decorative icon never covers the title. */
+.assistance .eyebrow.light,
+.assistance .explainer-title-row {
+  margin-left: 76px !important;
+}
+
+.explainer-title-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 16px !important;
+  flex-wrap: nowrap !important;
+}
+
+.explainer-title-row h2 {
+  margin: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.explainer-title-row .ai-source-disclosure {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  gap: 7px !important;
+  border-width: 2px !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.explainer-title-row .ai-source-disclosure svg {
+  width: 22px !important;
+  height: 22px !important;
+  flex: 0 0 22px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance::before {
+    left: 18px !important;
+    top: 24px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+  .assistance .eyebrow.light,
+  .assistance .explainer-title-row {
+    margin-left: 58px !important;
+  }
+  .explainer-title-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .explainer-title-row .ai-source-disclosure {
+    font-size: 15px !important;
+  }
+}
+
+
+/* T1 final: preserve original T0 explainer layout + AI source badge */
+.assistance {
+  position: relative !important;
+}
+
+.assistance::before {
+  left: 28px !important;
+  top: 38px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.assistance .eyebrow.light {
+  margin-left: 76px !important;
+}
+
+.assistance .explainer-title-row {
+  margin-left: 76px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  flex-wrap: nowrap !important;
+}
+
+.assistance .explainer-title-row h2 {
+  margin: 0 !important;
+  line-height: 1.12 !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 5px 9px !important;
+  border: 2px solid #173a5c !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #173a5c !important;
+  font-size: 15px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 20px !important;
+}
+
+.assistance .assist-intro {
+  margin-left: 76px !important;
+  margin-top: 5px !important;
+  max-width: none !important;
+}
+
+.assistance .explain-grid {
+  margin-top: 14px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance::before {
+    left: 18px !important;
+    top: 30px !important;
+    width: 46px !important;
+    height: 46px !important;
+  }
+  .assistance .eyebrow.light,
+  .assistance .explainer-title-row,
+  .assistance .assist-intro {
+    margin-left: 58px !important;
+  }
+  .assistance .explainer-title-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .assistance .explainer-title-row .ai-source-disclosure {
+    font-size: 14px !important;
+  }
+}
+
+
+/* FINAL T1 SPECIFICATION EXPLAINER — approved T0-style layout */
+.assistance {
+  position: relative !important;
+  display: block !important;
+  padding: 26px 28px 22px 104px !important;
+  min-height: 0 !important;
+}
+
+/* Decorative orange icon: fixed at the left, never overlapping text */
+.assistance::before {
+  left: 30px !important;
+  top: 38px !important;
+  width: 58px !important;
+  height: 58px !important;
+  z-index: 1 !important;
+}
+
+/* Undo prior offsets that pushed content into separate columns */
+.assistance .eyebrow.light,
+.assistance .explainer-title-row,
+.assistance .assist-intro,
+.assistance .explain-grid {
+  margin-left: 0 !important;
+  max-width: none !important;
+}
+
+/* Eyebrow above the title, exactly as in T0 */
+.assistance .eyebrow.light {
+  display: block !important;
+  margin-bottom: 5px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Title + T1 source disclosure on one line */
+.assistance .explainer-title-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  width: 100% !important;
+}
+
+.assistance .explainer-title-row h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.12 !important;
+}
+
+/* Compact but clearly visible T1 badge */
+.assistance .explainer-title-row .ai-source-disclosure {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  margin: 0 !important;
+  padding: 6px 11px !important;
+  border: 2px solid #173a5c !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #173a5c !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 1px 3px rgba(23,58,92,.12) !important;
+}
+
+.assistance .explainer-title-row .ai-source-disclosure svg {
+  width: 21px !important;
+  height: 21px !important;
+  flex: 0 0 21px !important;
+}
+
+/* Intro is directly under the title row and spans naturally */
+.assistance .assist-intro {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 5px !important;
+  margin-bottom: 14px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* A/B/C comparison occupies the full row below the header */
+.assistance .explain-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.assistance .explain-grid > div {
+  min-width: 0 !important;
+}
+
+@media (max-width: 760px) {
+  .assistance {
+    padding: 22px 16px 18px 72px !important;
+  }
+  .assistance::before {
+    left: 16px !important;
+    top: 28px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .assistance .explainer-title-row {
+    gap: 8px !important;
+  }
+  .assistance .explainer-title-row .ai-source-disclosure {
+    font-size: 14px !important;
+    padding: 5px 8px !important;
+  }
+  .assistance .explain-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* T1 alignment/spacing refinement */
+.assistance .assist-intro {
+  margin-top: 3px !important;
+  margin-bottom: 7px !important;
+  line-height: 1.35 !important;
+}
+
+/* Let the explainer comparison align with the page/product-card edges rather than
+   with the indented header text. */
+.assistance .explain-grid {
+  width: auto !important;
+  margin-left: -76px !important;
+  margin-right: 0 !important;
+  margin-top: 7px !important;
+}
+
+/* Keep comparable inner padding while preserving three equal columns. */
+.assistance .explain-grid > div {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+@media (max-width: 760px) {
+  .assistance .assist-intro {
+    margin-bottom: 7px !important;
+  }
+  .assistance .explain-grid {
+    margin-left: -56px !important;
+    margin-top: 7px !important;
+  }
+}
+
+
+/* Tighten only the space below the Specification Explainer intro */
+.assistance .assist-intro {
+  margin-bottom: 2px !important;
+}
+.assistance .explain-grid {
+  margin-top: 2px !important;
+}
+
+</style>
+<link rel="stylesheet" href="theme-red.css">
+</head>
+<body>
+<header class="site-header">
+ <div><div class="brand">Stride Market</div><div class="tagline">Every Step, Covered.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>Running<br>Shoes</h1>
+  <p>Imagine that you are shopping for running shoes for regular road running and everyday training. <strong><span class="desktop-priority-text">Your priorities for this purchase are listed to the right.</span><span class="mobile-priority-text">Your priorities for this purchase are listed below.</span></strong> Based on these priorities, review the product options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17.5 19H8a5 5 0 1 1 1.1-9.9A6 6 0 0 1 20.5 12a3.5 3.5 0 0 1-3 7z"/></svg></i>Cushioning</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8L2 22"/><path d="M17.5 15H9"/></svg></i>Lightweight</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></i>Durability</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$100 or less</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="eyebrow">AVAILABLE PRODUCTS</div><h2>Compare three options</h2>
+ <div class="product-grid">
+  <article class="product-card"><img src="assets/shoes-a.svg" alt="Aviren"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Aviren</h3><div class="price">$95</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this item</h4>
+<ul>
+<li><strong>Everyday road running:</strong> Neutral running shoe designed for daily training, long runs, and everyday wear.</li>
+<li><strong>Durable outsole:</strong> Full-coverage rubber outsole built to hold up to high weekly mileage.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 285 g (10.1 oz), men's US 9.</li>
+<li><strong>Secure fit:</strong> Padded heel collar and gusseted tongue to reduce slipping.</li>
+<li><strong>Available colors:</strong> Black, Graphite, and Navy.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>My legs feel fresh after long runs</h5><div class="review-meta">Maya R. · Verified Purchase</div><p>I did a 10-mile run on pavement and my knees and calves felt much better than in my old pair. The cushioning really takes the edge off hard roads.</p></article>
+<article><div class="stars">★★★★★</div><h5>Holding up really well</h5><div class="review-meta">Chris T. · Verified Purchase</div><p>I've been running in these almost every day for a few months and the outsole barely shows wear. Comfortable right out of the box.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Very comfortable, a bit heavy</h5><div class="review-meta">Jordan K. · Verified Purchase</div><p>Great on long runs and hard surfaces. They feel a little heavy when I try to pick up the pace for faster workouts.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good everyday trainer</h5><div class="review-meta">Nina P. · Verified Purchase</div><p>Fit was true to size and the heel feels secure. I wear them for runs and for long days on my feet.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/shoes-b.svg" alt="Brevik"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Brevik</h3><div class="price">$85</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.6 <span>Customer rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this item</h4>
+<ul>
+<li><strong>Lightweight running shoe:</strong> Streamlined neutral shoe designed for everyday runs, faster workouts, and casual wear.</li>
+<li><strong>Outsole:</strong> Rubber pods at the heel and toe, with exposed foam through the midfoot to save weight.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 235 g (8.3 oz), men's US 9.</li>
+<li><strong>Breathable upper:</strong> Lightweight knit upper with a sock-like fit.</li>
+<li><strong>Available colors:</strong> White, Black, and Sage.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Light and quick</h5><div class="review-meta">Alex M. · Verified Purchase</div><p>These are some of the lightest running shoes I have owned. They feel great for shorter runs and tempo days.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good for short runs</h5><div class="review-meta">Sam D. · Verified Purchase</div><p>Fine for my usual 3-mile loop. On longer runs on concrete, my legs feel more beat up than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Comfortable, wearing fast</h5><div class="review-meta">Taylor B. · Verified Purchase</div><p>I love the sock-like fit, but the exposed foam under the midfoot is already scuffed after a couple of months.</p></article>
+<article><div class="stars">★★★★★</div><h5>Great for everyday wear</h5><div class="review-meta">Renee L. · Verified Purchase</div><p>Light, breathable, and they look good. I wear them for runs and around town.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/shoes-c.svg" alt="Calyra"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Calyra</h3><div class="price">$99</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this item</h4>
+<ul>
+<li><strong>Versatile running shoe:</strong> Neutral running shoe designed for road running, gym workouts, and general everyday use.</li>
+<li><strong>Outsole:</strong> Rubber placed on the main high-wear zones of the heel and forefoot.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 260 g (9.2 oz), men's US 9.</li>
+<li><strong>Supportive fit:</strong> Engineered mesh upper with a structured heel counter.</li>
+<li><strong>Available colors:</strong> White, Slate Blue, and Black.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Good all-rounder</h5><div class="review-meta">Daniel S. · Verified Purchase</div><p>Comfortable on my regular road runs. On my longest runs my legs felt it a bit, but overall a solid shoe.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Stable, slightly heavier</h5><div class="review-meta">Priya N. · Verified Purchase</div><p>The heel feels very stable. They are a bit heavier than my old pair, but more comfortable.</p></article>
+<article><div class="stars">★★★★★</div><h5>Works for gym and road</h5><div class="review-meta">Morgan E. · Verified Purchase</div><p>I use them for treadmill runs and weight training. The cushioning feels balanced, not too soft or too firm.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Decent durability</h5><div class="review-meta">Jamie W. · Verified Purchase</div><p>The outsole is wearing evenly so far. Not the lightest shoe, but fine for daily miles.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+<section class="assistance">
+ <div class="eyebrow light">SHOPPING ASSISTANCE</div>
+ <div class="explainer-title-row">
+  <h2>Specification Explainer</h2>
+  <div class="ai-source-disclosure" aria-label="Generated by AI">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+   <rect x="5" y="7" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+   <path d="M12 4v3M9 4h6M3.5 11H5M19 11h1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+   <circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>
+   <path d="M9 15h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+  <span>Generated by AI</span>
+ </div>
+ 
+ <div class="explain-grid">
+  <div><b>Aviren</b><span><strong>Cushioning — 37 mm heel stack:</strong> High cushioning that absorbs impact well, keeping legs comfortable on long runs and hard pavement.<br><strong>Heel-to-toe drop — 10 mm:</strong> Higher drop; suits runners who tend to land on their heel.</span></div>
+  <div><b>Brevik</b><span><strong>Cushioning — 29 mm heel stack:</strong> Firm, moderate cushioning with a closer-to-the-ground feel; legs may feel more impact on long runs or hard pavement.<br><strong>Heel-to-toe drop — 6 mm:</strong> Lower drop; encourages a midfoot landing.</span></div>
+  <div><b>Calyra</b><span><strong>Cushioning — 33 mm heel stack:</strong> Balanced cushioning suited to everyday runs and typical road surfaces.<br><strong>Heel-to-toe drop — 8 mm:</strong> Moderate drop; suits most running styles.</span></div>
+ </div>
+</section>
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PRODUCT INFORMATION</div>
+   <h2>Technical specifications</h2>
+   <p class="spec-intro">Detailed technical specifications are available for all three products, including stack height, heel-to-toe drop, weight, midsole, outsole, and upper material.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Technical Specifications</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these specifications together with the shopping priorities above and the Specification Explainer when comparing the three options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Specification</th><th>Aviren</th><th>Brevik</th><th>Calyra</th></tr></thead>
+  <tbody>
+   <tr><td>Heel stack height</td><td>37 mm</td><td>29 mm</td><td>33 mm</td></tr>
+   <tr><td>Forefoot stack height</td><td>27 mm</td><td>23 mm</td><td>25 mm</td></tr>
+   <tr><td>Heel-to-toe drop</td><td>10 mm</td><td>6 mm</td><td>8 mm</td></tr>
+   <tr><td>Weight (men's US 9)</td><td>285 g</td><td>235 g</td><td>260 g</td></tr>
+   <tr><td>Midsole</td><td>Soft EVA-blend foam</td><td>Firm EVA foam</td><td>EVA foam</td></tr>
+   <tr><td>Outsole</td><td>Full-coverage rubber</td><td>Rubber pods (heel/toe)</td><td>Rubber on high-wear zones</td></tr>
+   <tr><td>Upper</td><td>Engineered mesh</td><td>Knit</td><td>Engineered mesh</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#FDF1F0;border:1px solid #F8D9D7;color:#5F4547;font-size:14.5px;line-height:1.45"><strong style="color:#3D1518">About cushioning (stack height):</strong> Stack height is the thickness of the sole between your foot and the ground, measured in millimeters at the heel. Higher numbers mean more cushioning; most everyday running shoes fall between about 25 mm (firm, close to the ground) and 40 mm (highly cushioned). In general, higher-stack shoes absorb more impact on long runs and hard pavement, while lower-stack shoes feel firmer, with more of the ground's impact reaching your legs.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which product would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Aviren</button><button class="choice" data-choice="B">Brevik</button><button class="choice" data-choice="C">Calyra</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "RunningShoes-interpretive/index_T1.html", "category": "shoes", "ai_type": "interpretive", "alignment": "aligned", "transparency": "T1", "correct": "A", "lure": "B"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Hotel Booking Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* Final T0: small clearance below orange icon before explainer boxes */
+.assistance .explain-grid {
+  margin-top: 12px !important;
+}
+
+
+.filter-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:4px}
+.filter-heading h2{margin-bottom:0}.filter-message{margin:6px 0 18px;color:#4B4F6B;font-size:16px}
+.all-hotels-btn{min-width:180px;padding:11px 20px!important;font-size:17px;font-weight:750;color:#173a5c;border-radius:10px}
+.filtering-grid:not(.show-all){grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="C"]{grid-column:1}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="A"],.filtering-grid:not(.show-all) .product-card[data-filter-product="B"]{display:none!important}
+.filtering-grid.show-all .product-card{display:flex}
+.all-hotels-btn[aria-pressed="true"]{background:#244f7a!important;color:#fff!important;border-color:#173a5c!important}
+@media(max-width:760px){.filter-heading{align-items:stretch;flex-direction:column;gap:10px}.all-hotels-btn{width:100%}.filtering-grid:not(.show-all){grid-template-columns:1fr!important}.filtering-grid:not(.show-all) .product-card[data-filter-product="C"]{grid-column:1}}
+
+
+/* Filtering layout correction: preserve original product-card sizing */
+.filtering-grid {
+  width: 100% !important;
+}
+
+/* Recommended view: A occupies exactly one original card column. */
+.filtering-grid:not(.show-all) {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.filtering-grid:not(.show-all) .product-card[data-filter-product="C"] {
+  grid-column: 1 / 2 !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* All Hotels: exact same 3-column geometry as the original page. */
+.filtering-grid.show-all {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.filtering-grid.show-all .product-card {
+  display: flex !important;
+  width: auto !important;
+  max-width: none !important;
+  grid-column: auto !important;
+}
+
+/* Do not allow product images to enlarge in either filtering state. */
+.filtering-grid .product-card > img {
+  width: var(--original-product-image-width, auto);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .filtering-grid:not(.show-all),
+  .filtering-grid.show-all {
+    grid-template-columns: 1fr !important;
+  }
+  .filtering-grid:not(.show-all) .product-card[data-filter-product="C"] {
+    grid-column: 1 !important;
+  }
+}
+
+
+@media (max-width: 760px) {
+  .products {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .products .filter-heading {
+    display: contents !important;
+  }
+  .products .filter-heading > div {
+    order: 1 !important;
+  }
+  .products .filter-message {
+    order: 2 !important;
+  }
+  .products .filtering-grid {
+    order: 3 !important;
+  }
+  .products .all-hotels-btn {
+    order: 4 !important;
+    width: 100% !important;
+    margin-top: 14px !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .all-hotels-btn {
+    margin-right: clamp(44px, 10vw, 170px) !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+
+  .products .all-hotels-btn {
+    position: absolute !important;
+    right: 12.5% !important;
+    transform: translateX(50%) !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+  .products .all-hotels-btn {
+    position: absolute !important;
+    right: auto !important;
+    transform: none !important;
+    margin-right: 0 !important;
+  }
+}
+
+
+/* FINAL desktop alignment: All Hotels center = Compare Property Details center */
+@media (min-width: 761px) {
+  .products .filter-heading {
+    position: relative !important;
+  }
+  #allHotelsBtn {
+    position: absolute !important;
+    right: auto !important;
+    margin: 0 !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+/* Recommended view: only Hotel Avelin is available in the spec table and decision */
+body.filter-recommended .spec-panel th:nth-child(2),
+body.filter-recommended .spec-panel td:nth-child(2),
+body.filter-recommended .spec-panel th:nth-child(3),
+body.filter-recommended .spec-panel td:nth-child(3),
+body.filter-recommended .choice[data-choice="A"],
+body.filter-recommended .choice[data-choice="B"] {
+  display: none !important;
+}
+body.filter-recommended .spec-panel .table-scroll table { min-width: 0 !important; }
+
+/* T1: AI source disclosure next to "Recommended for You" (same look as the explainer study) */
+.rec-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.rec-title-row h2 { margin: 0 !important; }
+.products .ai-source-disclosure {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 11px; border: 2px solid #3730A3; border-radius: 8px;
+  background: #fff; color: #3730A3;
+  font-size: 16px; font-weight: 800; line-height: 1; white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(55,48,163,.12);
+}
+.products .ai-source-disclosure svg { width: 21px; height: 21px; flex: 0 0 21px; }
+/* Disclosures describe the recommendation, so they are hidden in the All Hotels view */
+body:not(.filter-recommended) .ai-rec-only { display: none !important; }
+@media (max-width: 760px) {
+  .rec-title-row { gap: 8px; }
+  .products .ai-source-disclosure { font-size: 14px; padding: 5px 8px; }
+}
+
+/* T2: AI process disclosure (same look as the explainer study) */
+.products .ai-process-disclosure {
+  display: flex; align-items: center; gap: 14px;
+  margin: -6px 0 16px; padding: 10px 14px;
+  background: #F7F7FE; border: 1px solid #D9DCF7; border-radius: 10px;
+}
+.products .ai-process-icon {
+  width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center;
+  border-radius: 50%; background: #fff; color: #6366F1; font-size: 21px;
+}
+.products .ai-process-copy { display: flex; flex-direction: column; gap: 3px; line-height: 1.32; min-width: 0; }
+.products .ai-process-copy strong { color: #1E1B4B; font-size: 16px; font-weight: 800; }
+.products .ai-process-copy span { color: #4B4F6B; font-size: 14.5px; }
+@media (max-width: 760px) {
+  .products .ai-process-disclosure { order: 2 !important; margin: 0 0 14px; align-items: flex-start; }
+  .products .ai-process-icon { width: 34px; height: 34px; flex-basis: 34px; font-size: 18px; }
+}
+
+/* Mid-width screens (761-1100px): keep All Hotels in normal flow so it never overlaps the heading */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .products .filter-heading { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: space-between !important; gap: 12px 20px !important; }
+  #allHotelsBtn { position: static !important; left: auto !important; transform: none !important; margin: 0 !important; }
+}
+
+</style>
+<link rel="stylesheet" href="theme-indigo.css">
+</head>
+<body class="filter-recommended">
+<header class="site-header">
+ <div><div class="brand">Staybright</div><div class="tagline">Find Your Perfect Stay.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>City<br>Hotel</h1>
+  <p>Imagine that you are booking a hotel for a 3-night leisure trip to a city you have not visited before. <strong><span class="desktop-priority-text">Your priorities for this booking are listed to the right.</span><span class="mobile-priority-text">Your priorities for this booking are listed below.</span></strong> Based on these priorities, review the hotel options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="13" cy="4" r="2"/><path d="M8 21l3-7 3 3v4"/><path d="M11 14l-1-5 4-1 2 4 3 1"/><path d="M10 9l-3 2v3"/></svg></i>Walkable location</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 9V5h4M21 9V5h-4M3 15v4h4M21 15v4h-4"/><rect x="8" y="9" width="8" height="6" rx="1"/></svg></i>Spacious room</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></i>Cleanliness</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$200 or less per night</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="filter-heading"><div><div class="eyebrow">SHOPPING ASSISTANCE</div><div class="rec-title-row"><h2 id="productSectionTitle">Recommended for You</h2><div class="ai-source-disclosure ai-rec-only" aria-label="Generated by AI">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+   <rect x="5" y="7" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+   <path d="M12 4v3M9 4h6M3.5 11H5M19 11h1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+   <circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/>
+   <path d="M9 15h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>
+  <span>Generated by AI</span>
+ </div></div></div><button id="allHotelsBtn" class="all-hotels-btn" type="button" aria-pressed="false">▦&nbsp;&nbsp;All Hotels</button></div>
+<p id="filterMessage" class="filter-message">Based on your shopping priorities, the hotel below is shown as the recommended option.</p>
+<div class="ai-process-disclosure ai-rec-only">
+ <div class="ai-process-icon" aria-hidden="true">⚙</div>
+ <div class="ai-process-copy">
+  <strong>How the recommendation was created</strong>
+  <span>The AI examined each hotel’s property details, compared them with your priorities and budget, and selected the hotel that best matches them to show as the recommended option.</span>
+ </div>
+</div>
+ <div class="product-grid filtering-grid">
+  <article class="product-card" data-filter-product="A"><img src="assets/hotel-a.svg" alt="Hotel Avelin"><div class="product-copy"><div class="option">CITY HOTEL</div><h3>Hotel Avelin</h3><div class="price">$139 / night</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.6 <span>Guest rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this property</h4>
+<ul>
+<li><strong>Property:</strong> Modern 4-story hotel with 96 guest rooms, a fitness room, and a 24-hour front desk.</li>
+<li><strong>Room size:</strong> Standard Queen Room, 220 sq ft.</li>
+<li><strong>Cleanliness:</strong> Guest cleanliness score 9.5 out of 10.</li>
+<li><strong>Included:</strong> Free hot breakfast, free Wi-Fi, and free on-site parking.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Guest reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Spotless and great value</h5><div class="review-meta">Maya R. · Verified Stay</div><p>The room was immaculate and breakfast was included. Hard to beat for the price.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Clean, but far from everything</h5><div class="review-meta">Chris T. · Verified Stay</div><p>We needed a rideshare to get to most restaurants and sights.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Room on the small side</h5><div class="review-meta">Jordan K. · Verified Stay</div><p>With two suitcases open, there wasn't much space to move around.</p></article>
+<article><div class="stars">★★★★★</div><h5>Friendly and easy</h5><div class="review-meta">Nina P. · Verified Stay</div><p>Quick check-in, free parking, and very helpful staff.</p></article>
+</div></div></div></article>
+  <article class="product-card" data-filter-product="B"><img src="assets/hotel-b.svg" alt="The Brenmoor"><div class="product-copy"><div class="option">CITY HOTEL</div><h3>The Brenmoor</h3><div class="price">$165 / night</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.5 <span>Guest rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this property</h4>
+<ul>
+<li><strong>Property:</strong> Renovated 1920s building with 120 guest rooms, a lobby café, and a 24-hour front desk.</li>
+<li><strong>Room size:</strong> Standard Queen Room, 260 sq ft.</li>
+<li><strong>Cleanliness:</strong> Guest cleanliness score 9.0 out of 10.</li>
+<li><strong>Included:</strong> Free Wi-Fi; breakfast available for $15; parking nearby for $25 per night.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Guest reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Good base for the city</h5><div class="review-meta">Daniel S. · Verified Stay</div><p>We walked to plenty of restaurants and took the metro to the farther sights.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Comfortable room</h5><div class="review-meta">Priya N. · Verified Stay</div><p>A decent amount of space for two people and a comfortable bed.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Clean enough</h5><div class="review-meta">Morgan E. · Verified Stay</div><p>Housekeeping was fine, with a little dust here and there.</p></article>
+<article><div class="stars">★★★★★</div><h5>Charming building</h5><div class="review-meta">Jamie W. · Verified Stay</div><p>Loved the lobby café and the character of the old building.</p></article>
+</div></div></div></article>
+  <article class="product-card" data-filter-product="C"><img src="assets/hotel-c.svg" alt="Hotel Corvel"><div class="product-copy"><div class="option">CITY HOTEL</div><h3>Hotel Corvel</h3><div class="price">$179 / night</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.5 <span>Guest rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this property</h4>
+<ul>
+<li><strong>Property:</strong> Boutique hotel with 84 guest rooms, a rooftop terrace, and a 24-hour front desk.</li>
+<li><strong>Room size:</strong> Standard King Room, 300 sq ft.</li>
+<li><strong>Cleanliness:</strong> Guest cleanliness score 8.6 out of 10.</li>
+<li><strong>Included:</strong> Free Wi-Fi; breakfast available for $18; valet parking for $38 per night.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Guest reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Location is unbeatable</h5><div class="review-meta">Alex M. · Verified Stay</div><p>We walked everywhere: museums, dinner, the river. We never needed a taxi.</p></article>
+<article><div class="stars">★★★★★</div><h5>Roomy and comfortable</h5><div class="review-meta">Sam D. · Verified Stay</div><p>Much more spacious than most city hotels we've stayed in.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Great stay, cleaning could be better</h5><div class="review-meta">Taylor B. · Verified Stay</div><p>A few spots in the bathroom were missed, but nothing serious.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Lively neighborhood</h5><div class="review-meta">Renee L. · Verified Stay</div><p>The area is busy in the evening, which we enjoyed, and the rooftop is lovely.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PROPERTY INFORMATION</div>
+   <h2>Property details</h2>
+   <p class="spec-intro" id="specIntro">Detailed property information is available for <span id="specScope">the hotel shown above</span>, including Walk Score, room size, cleanliness score, distance to city center, bed, breakfast, parking, and cancellation policy.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Property Details</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these details together with the shopping priorities above when comparing the available options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Detail</th><th>Hotel Avelin</th><th>The Brenmoor</th><th>Hotel Corvel</th></tr></thead>
+  <tbody>
+   <tr><td>Walk Score</td><td>52</td><td>76</td><td>94</td></tr>
+   <tr><td>Room size</td><td>220 sq ft</td><td>260 sq ft</td><td>300 sq ft</td></tr>
+   <tr><td>Cleanliness score (guest-rated)</td><td>9.5 / 10</td><td>9.0 / 10</td><td>8.6 / 10</td></tr>
+   <tr><td>Distance to city center</td><td>3.8 mi</td><td>1.6 mi</td><td>0.3 mi</td></tr>
+   <tr><td>Bed</td><td>Queen</td><td>Queen</td><td>King</td></tr>
+   <tr><td>Breakfast</td><td>Included</td><td>$15</td><td>$18</td></tr>
+   <tr><td>Parking</td><td>Free on-site</td><td>$25/night nearby</td><td>$38/night valet</td></tr>
+   <tr><td>Free cancellation</td><td>Until 24 h before check-in</td><td>Until 48 h before check-in</td><td>Until 72 h before check-in</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#F1F2FD;border:1px solid #D9DCF7;color:#4B4F6B;font-size:14.5px;line-height:1.45"><strong style="color:#1E1B4B">About Walk Score:</strong> Walk Score is a published 0–100 index of how easy it is to get around on foot from an address, based on walking distance to nearby restaurants, shops, and other amenities. Scores of 90–100 mean “Walker’s Paradise” (daily errands do not require a car), 70–89 “Very Walkable” (most errands can be done on foot), 50–69 “Somewhat Walkable” (some errands can be done on foot), and below 50 “Car-Dependent”.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which hotel would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Hotel Avelin</button><button class="choice" data-choice="B">The Brenmoor</button><button class="choice" data-choice="C">Hotel Corvel</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+ const b=document.getElementById('allHotelsBtn'),g=document.querySelector('.filtering-grid'),h=document.getElementById('productSectionTitle'),m=document.getElementById('filterMessage');
+ if(!b||!g)return;
+ b.addEventListener('click',function(){
+  if(typeof closeAboutPanels==='function')closeAboutPanels();
+  if(typeof closeReviewPanels==='function')closeReviewPanels();
+  document.querySelectorAll('.product-card.active-popup').forEach(function(c){c.classList.remove('active-popup');});
+  const all=g.classList.toggle('show-all'); b.setAttribute('aria-pressed',all?'true':'false');
+  h.textContent=all?'All Hotels':'Recommended for You';
+  m.textContent=all?'All three available hotels are shown below.':'Based on your shopping priorities, the hotel below is shown as the recommended option.';
+  b.innerHTML=all?'★&nbsp;&nbsp;Recommended for You':'▦&nbsp;&nbsp;All Hotels';
+  document.body.classList.toggle('filter-recommended',!all);
+  var scope=document.getElementById('specScope');
+  if(scope)scope.textContent=all?'all three hotels':'the hotel shown above';
+  if(!all){
+   var sel=document.querySelector('.choice.selected');
+   if(sel&&sel.dataset.choice!=='C'){
+    sel.classList.remove('selected');sel.setAttribute('aria-pressed','false');
+    var cb=document.getElementById('continueBtn');if(cb)cb.disabled=true;
+    var cm=document.getElementById('choiceMessage');if(cm)cm.textContent='';
+    if(typeof selectedChoice!=='undefined')selectedChoice=null;
+   }
+  }
+ });
+})();
+</script>
+
+
+<script>
+(function () {
+  const allBtn = document.getElementById('allHotelsBtn');
+  const specBtn = document.getElementById('specBtn');
+  const heading = document.querySelector('.products .filter-heading');
+
+  if (!allBtn || !specBtn || !heading) return;
+
+  function alignCenters() {
+    if (window.innerWidth <= 760) {
+      allBtn.style.left = '';
+      allBtn.style.transform = '';
+      return;
+    }
+
+    const spec = specBtn.getBoundingClientRect();
+    const parent = heading.getBoundingClientRect();
+
+    // Put the CENTER of All Hotels at the exact viewport x-coordinate
+    // of the CENTER of Compare Property Details.
+    const specCenterX = spec.left + (spec.width / 2);
+    allBtn.style.left = (specCenterX - parent.left) + 'px';
+    allBtn.style.transform = 'translateX(-50%)';
+  }
+
+  window.addEventListener('load', alignCenters);
+  window.addEventListener('resize', alignCenters);
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(alignCenters);
+  }
+
+  const observer = new ResizeObserver(alignCenters);
+  observer.observe(specBtn);
+  observer.observe(heading);
+
+  requestAnimationFrame(() => requestAnimationFrame(alignCenters));
+})();
+</script>
+
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "Hotel-filter/index_filtering_T2.html", "category": "hotel", "ai_type": "filter", "alignment": "aligned", "transparency": "T2", "correct": "C", "lure": "A"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

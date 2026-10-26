@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Running Shoes Shopping Task</title><link rel="stylesheet" href="style.css">
+
+<style>
+/* V21 visibility and selection refinements */
+button:not(.close-reviews):not(.rating-btn) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #6f9bd8 !important;
+  background-color: #f2f7fd !important;
+  box-shadow: 0 1px 2px rgba(20, 60, 110, 0.08);
+}
+button:not(.close-reviews):not(.rating-btn):hover {
+  background-color: #e7f1fc !important;
+}
+/* Restore the earlier customer-rating appearance; only enlarge its text. */
+.rating-btn {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 18px !important;
+}
+.rating-btn span { font-size: 16px !important; }
+/* Keep the two explainer items close together. */
+.explain-grid span { line-height: 1.38 !important; }
+/* Make product selection unmistakable. */
+button.choice.selected,
+button.choice[aria-pressed="true"] {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 0 0 3px rgba(36,79,122,.18) !important;
+  font-weight: 700 !important;
+}
+/* Strong state overrides: these intentionally outrank the general button styling above. */
+.decision-card .choices button.choice.selected,
+.decision-card .choices button.choice[aria-pressed="true"] {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+  color: #ffffff !important;
+  border: 3px solid #173a5c !important;
+  box-shadow: 0 0 0 4px rgba(36,79,122,.20), 0 3px 8px rgba(23,58,92,.16) !important;
+}
+.decision-card .choices button.choice.selected:hover,
+.decision-card .choices button.choice[aria-pressed="true"]:hover {
+  background: #244f7a !important;
+  background-color: #244f7a !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled) {
+  background: #0b57b7 !important;
+  background-color: #0b57b7 !important;
+  color: #ffffff !important;
+  border: 3px solid #08448f !important;
+  box-shadow: 0 4px 10px rgba(11,87,183,.28) !important;
+  opacity: 1 !important;
+}
+.decision-card .choices button#continueBtn.continue:not(:disabled):hover {
+  background: #084b9f !important;
+  background-color: #084b9f !important;
+}
+/* Make Continue visually prominent once a choice is made. */
+.continue {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  padding: 12px 28px !important;
+}
+button.continue:not(:disabled) {
+  background-color: #244f7a !important;
+  color: #fff !important;
+  border-color: #173a5c !important;
+  box-shadow: 0 3px 8px rgba(23,58,92,.22) !important;
+}
+button.continue:disabled {
+  opacity: .48 !important;
+  cursor: not-allowed !important;
+}
+.spec-heading {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 28px;
+}
+.spec-btn {
+  margin-right: clamp(44px, 10vw, 170px) !important;
+  justify-self: end;
+}
+@media (max-width: 760px) {
+  .spec-heading { display: block !important; }
+  .spec-btn { margin: 14px 0 0 0 !important; width: 100%; }
+}
+
+/* Final T0: small clearance below orange icon before explainer boxes */
+.assistance .explain-grid {
+  margin-top: 12px !important;
+}
+
+</style>
+<link rel="stylesheet" href="theme-red.css">
+</head>
+<body>
+<header class="site-header">
+ <div><div class="brand">Stride Market</div><div class="tagline">Every Step, Covered.</div></div>
+ <div class="header-right">Shopping Decision Task</div>
+</header>
+
+<main class="page">
+<section class="task-priority">
+ <div class="task">
+  <h1>Running<br>Shoes</h1>
+  <p>Imagine that you are shopping for running shoes for regular road running and everyday training. <strong><span class="desktop-priority-text">Your priorities for this purchase are listed to the right.</span><span class="mobile-priority-text">Your priorities for this purchase are listed below.</span></strong> Based on these priorities, review the product options and choose the one you'd select.</p>
+ </div>
+ <div class="priority-card">
+  <div class="priority-head"><div class="priority-title">Shopping Priorities</div><div class="priority-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 20h10"/><path d="M6 6l6-1l6 1"/><path d="M12 3v17"/><path d="M9 12l-3-6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3-6l-3 6a3 3 0 0 0 6 0"/></svg><span>All three are equally important</span></div></div>
+  <div class="priority-list">
+   <div><span><i class="priority-icon battery-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17.5 19H8a5 5 0 1 1 1.1-9.9A6 6 0 0 1 20.5 12a3.5 3.5 0 0 1-3 7z"/></svg></i>Cushioning</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon case-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8L2 22"/><path d="M17.5 15H9"/></svg></i>Lightweight</span><strong>Important</strong></div>
+   <div><span><i class="priority-icon noise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></i>Durability</span><strong>Important</strong></div>
+  </div>
+  <div class="budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg><span>Budget: <strong>$100 or less</strong></span></div>
+ </div>
+</section>
+
+<section class="products">
+ <div class="eyebrow">AVAILABLE PRODUCTS</div><h2>Compare three options</h2>
+ <div class="product-grid">
+  <article class="product-card"><img src="assets/shoes-a.svg" alt="Aviren"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Aviren</h3><div class="price">$95</div><button class="rating rating-btn" data-product="A" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="A">View Details</button><div class="details about-item" id="details-A">
+<h4>About this item</h4>
+<ul>
+<li><strong>Everyday road running:</strong> Neutral running shoe designed for daily training, long runs, and everyday wear.</li>
+<li><strong>Durable outsole:</strong> Full-coverage rubber outsole built to hold up to high weekly mileage.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 285 g (10.1 oz), men's US 9.</li>
+<li><strong>Secure fit:</strong> Padded heel collar and gusseted tongue to reduce slipping.</li>
+<li><strong>Available colors:</strong> Black, Graphite, and Navy.</li>
+</ul></div><div class="review-popup" id="reviews-A">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="A" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>My legs feel fresh after long runs</h5><div class="review-meta">Maya R. · Verified Purchase</div><p>I did a 10-mile run on pavement and my knees and calves felt much better than in my old pair. The cushioning really takes the edge off hard roads.</p></article>
+<article><div class="stars">★★★★★</div><h5>Holding up really well</h5><div class="review-meta">Chris T. · Verified Purchase</div><p>I've been running in these almost every day for a few months and the outsole barely shows wear. Comfortable right out of the box.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Very comfortable, a bit heavy</h5><div class="review-meta">Jordan K. · Verified Purchase</div><p>Great on long runs and hard surfaces. They feel a little heavy when I try to pick up the pace for faster workouts.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good everyday trainer</h5><div class="review-meta">Nina P. · Verified Purchase</div><p>Fit was true to size and the heel feels secure. I wear them for runs and for long days on my feet.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/shoes-b.svg" alt="Brevik"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Brevik</h3><div class="price">$85</div><button class="rating rating-btn" data-product="B" aria-expanded="false">★ 4.6 <span>Customer rating</span></button><button class="details-btn" data-product="B">View Details</button><div class="details about-item" id="details-B">
+<h4>About this item</h4>
+<ul>
+<li><strong>Lightweight running shoe:</strong> Streamlined neutral shoe designed for everyday runs, faster workouts, and casual wear.</li>
+<li><strong>Outsole:</strong> Rubber pods at the heel and toe, with exposed foam through the midfoot to save weight.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 235 g (8.3 oz), men's US 9.</li>
+<li><strong>Breathable upper:</strong> Lightweight knit upper with a sock-like fit.</li>
+<li><strong>Available colors:</strong> White, Black, and Sage.</li>
+</ul></div><div class="review-popup" id="reviews-B">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.6 out of 5</span></div><button class="close-reviews" data-product="B" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Light and quick</h5><div class="review-meta">Alex M. · Verified Purchase</div><p>These are some of the lightest running shoes I have owned. They feel great for shorter runs and tempo days.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Good for short runs</h5><div class="review-meta">Sam D. · Verified Purchase</div><p>Fine for my usual 3-mile loop. On longer runs on concrete, my legs feel more beat up than I expected.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Comfortable, wearing fast</h5><div class="review-meta">Taylor B. · Verified Purchase</div><p>I love the sock-like fit, but the exposed foam under the midfoot is already scuffed after a couple of months.</p></article>
+<article><div class="stars">★★★★★</div><h5>Great for everyday wear</h5><div class="review-meta">Renee L. · Verified Purchase</div><p>Light, breathable, and they look good. I wear them for runs and around town.</p></article>
+</div></div></div></article>
+  <article class="product-card"><img src="assets/shoes-c.svg" alt="Calyra"><div class="product-copy"><div class="option">RUNNING SHOES</div><h3>Calyra</h3><div class="price">$99</div><button class="rating rating-btn" data-product="C" aria-expanded="false">★ 4.5 <span>Customer rating</span></button><button class="details-btn" data-product="C">View Details</button><div class="details about-item" id="details-C">
+<h4>About this item</h4>
+<ul>
+<li><strong>Versatile running shoe:</strong> Neutral running shoe designed for road running, gym workouts, and general everyday use.</li>
+<li><strong>Outsole:</strong> Rubber placed on the main high-wear zones of the heel and forefoot.</li>
+<li><strong>Shoe weight:</strong> Each shoe weighs 260 g (9.2 oz), men's US 9.</li>
+<li><strong>Supportive fit:</strong> Engineered mesh upper with a structured heel counter.</li>
+<li><strong>Available colors:</strong> White, Slate Blue, and Black.</li>
+</ul></div><div class="review-popup" id="reviews-C">
+<div class="review-pop-head"><div><h4>Customer reviews</h4><span class="review-summary">★ 4.5 out of 5</span></div><button class="close-reviews" data-product="C" aria-label="Close reviews">×</button></div>
+<div class="review-list">
+<article><div class="stars">★★★★★</div><h5>Good all-rounder</h5><div class="review-meta">Daniel S. · Verified Purchase</div><p>Comfortable on my regular road runs. On my longest runs my legs felt it a bit, but overall a solid shoe.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Stable, slightly heavier</h5><div class="review-meta">Priya N. · Verified Purchase</div><p>The heel feels very stable. They are a bit heavier than my old pair, but more comfortable.</p></article>
+<article><div class="stars">★★★★★</div><h5>Works for gym and road</h5><div class="review-meta">Morgan E. · Verified Purchase</div><p>I use them for treadmill runs and weight training. The cushioning feels balanced, not too soft or too firm.</p></article>
+<article><div class="stars">★★★★☆</div><h5>Decent durability</h5><div class="review-meta">Jamie W. · Verified Purchase</div><p>The outsole is wearing evenly so far. Not the lightest shoe, but fine for daily miles.</p></article>
+</div></div></div></article>
+ </div>
+</section>
+
+<section class="assistance">
+ <div class="eyebrow light">SHOPPING ASSISTANCE</div>
+ <h2>Specification Explainer</h2>
+ 
+ <div class="explain-grid">
+  <div><b>Aviren</b><span><strong>Cushioning — 37 mm heel stack:</strong> High cushioning that absorbs impact well, keeping legs comfortable on long runs and hard pavement.<br><strong>Heel-to-toe drop — 10 mm:</strong> Higher drop; suits runners who tend to land on their heel.</span></div>
+  <div><b>Brevik</b><span><strong>Cushioning — 29 mm heel stack:</strong> Firm, moderate cushioning with a closer-to-the-ground feel; legs may feel more impact on long runs or hard pavement.<br><strong>Heel-to-toe drop — 6 mm:</strong> Lower drop; encourages a midfoot landing.</span></div>
+  <div><b>Calyra</b><span><strong>Cushioning — 33 mm heel stack:</strong> Balanced cushioning suited to everyday runs and typical road surfaces.<br><strong>Heel-to-toe drop — 8 mm:</strong> Moderate drop; suits most running styles.</span></div>
+ </div>
+</section>
+
+<section class="evidence-card">
+ <div class="spec-heading">
+  <div>
+   <div class="eyebrow">ADDITIONAL PRODUCT INFORMATION</div>
+   <h2>Technical specifications</h2>
+   <p class="spec-intro">Detailed technical specifications are available for all three products, including stack height, heel-to-toe drop, weight, midsole, outsole, and upper material.</p>
+  </div>
+  <button id="specBtn" class="spec-btn" aria-expanded="false">Compare Technical Specifications</button>
+ </div>
+ <div id="specPanel" class="spec-panel">
+  <p class="spec-guidance">Review as much or as little of this information as you would like. You can use these specifications together with the shopping priorities above and the Specification Explainer when comparing the three options.</p>
+  <div class="table-scroll"><table>
+  <thead><tr><th>Specification</th><th>Aviren</th><th>Brevik</th><th>Calyra</th></tr></thead>
+  <tbody>
+   <tr><td>Heel stack height</td><td>37 mm</td><td>29 mm</td><td>33 mm</td></tr>
+   <tr><td>Forefoot stack height</td><td>27 mm</td><td>23 mm</td><td>25 mm</td></tr>
+   <tr><td>Heel-to-toe drop</td><td>10 mm</td><td>6 mm</td><td>8 mm</td></tr>
+   <tr><td>Weight (men's US 9)</td><td>285 g</td><td>235 g</td><td>260 g</td></tr>
+   <tr><td>Midsole</td><td>Soft EVA-blend foam</td><td>Firm EVA foam</td><td>EVA foam</td></tr>
+   <tr><td>Outsole</td><td>Full-coverage rubber</td><td>Rubber pods (heel/toe)</td><td>Rubber on high-wear zones</td></tr>
+   <tr><td>Upper</td><td>Engineered mesh</td><td>Knit</td><td>Engineered mesh</td></tr>
+  </tbody>
+ </table></div>
+  <div class="spec-note" style="margin-top:14px;padding:12px 16px;border-radius:10px;background:#FDF1F0;border:1px solid #F8D9D7;color:#5F4547;font-size:14.5px;line-height:1.45"><strong style="color:#3D1518">About cushioning (stack height):</strong> Stack height is the thickness of the sole between your foot and the ground, measured in millimeters at the heel. Higher numbers mean more cushioning; most everyday running shoes fall between about 25 mm (firm, close to the ground) and 40 mm (highly cushioned). In general, higher-stack shoes absorb more impact on long runs and hard pavement, while lower-stack shoes feel firmer, with more of the ground's impact reaching your legs.</div>
+ </div>
+</section>
+
+
+
+<section class="decision-card">
+ <div><div class="eyebrow">YOUR DECISION</div><h2>Which product would you choose?</h2></div>
+ <div class="choices"><button class="choice" data-choice="A">Aviren</button><button class="choice" data-choice="B">Brevik</button><button class="choice" data-choice="C">Calyra</button><button id="continueBtn" class="continue" disabled>Continue</button></div>
+ <div id="choiceMessage"></div>
+</section>
+</main>
+<footer>Research shopping task</footer><script src="script.js"></script>
+<script>
+(function () {
+  const choices = document.querySelectorAll('.choice');
+  const continueBtn = document.getElementById('continueBtn');
+  choices.forEach(function (btn) {
+    btn.setAttribute('aria-pressed', 'false');
+    btn.addEventListener('click', function () {
+      choices.forEach(function (other) {
+        other.classList.remove('selected');
+        other.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('selected');
+      btn.setAttribute('aria-pressed', 'true');
+      if (continueBtn) continueBtn.disabled = false;
+    });
+  });
+})();
+</script>
+<!-- stim-tracking -->
+<script>window.STIM = {"page": "RunningShoes-interpretive/index_T0.html", "category": "shoes", "ai_type": "interpretive", "alignment": "aligned", "transparency": "T0", "correct": "A", "lure": "B"};</script>
+<script src="tracker.js"></script>
+<!-- /stim-tracking -->
+</body></html>

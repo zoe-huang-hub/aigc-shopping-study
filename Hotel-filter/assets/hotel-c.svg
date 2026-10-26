@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+<defs>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f3d55"/><stop offset="1" stop-color="#24304a"/></linearGradient>
+ <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a88f74"/><stop offset="1" stop-color="#8f775e"/></linearGradient>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3f5"/><stop offset="1" stop-color="#eef5fb"/></linearGradient>
+ <linearGradient id="duvet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e5e6ea"/></linearGradient>
+ <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+<rect width="800" height="800" fill="url(#wall)"/>
+<rect y="560" width="800" height="240" fill="url(#floor)"/>
+<rect y="556" width="800" height="8" fill="#000" opacity=".08"/>
+<!-- window -->
+<rect x="425.0" y="90" width="270" height="300" rx="4" fill="#f4f4f2"/>
+<rect x="435.0" y="100" width="250" height="280" fill="url(#sky)"/>
+<rect x="449" y="190" width="28" height="60" fill="#9aa7bd" opacity=".8"/><rect x="481" y="155" width="28" height="95" fill="#9aa7bd" opacity=".8"/><rect x="512" y="180" width="28" height="70" fill="#9aa7bd" opacity=".8"/><rect x="544" y="130" width="28" height="120" fill="#9aa7bd" opacity=".8"/><rect x="576" y="165" width="28" height="85" fill="#9aa7bd" opacity=".8"/><rect x="608" y="145" width="28" height="105" fill="#9aa7bd" opacity=".8"/><rect x="639" y="185" width="28" height="65" fill="#9aa7bd" opacity=".8"/>
+<rect x="435.0" y="250" width="250" height="130" fill="#dfe6ee" opacity=".55"/>
+<rect x="557" y="100" width="6" height="280" fill="#f4f4f2"/>
+<rect x="395.0" y="80" width="40" height="330" fill="#c9a96e" opacity=".85"/>
+<rect x="685.0" y="80" width="40" height="330" fill="#c9a96e" opacity=".85"/>
+<!-- art -->
+<rect x="90" y="150" width="150" height="110" fill="#fff"/><rect x="100" y="160" width="130" height="90" fill="#e6b8a2"/>
+<path d="M100,250 L150,195 L185,230 L205,212 L230,250 Z" fill="#fff" opacity=".35"/>
+<!-- bed shadow -->
+<ellipse cx="400" cy="640" rx="225.0" ry="26" fill="#000" opacity=".22" filter="url(#soft)"/>
+<!-- headboard -->
+<rect x="205.0" y="380" width="390" height="150" rx="10" fill="#c9a96e"/>
+<rect x="215.0" y="392" width="370" height="10" rx="5" fill="#fff" opacity=".12"/>
+<!-- pillows -->
+<rect x="235.0" y="458" width="151.0" height="58" rx="22" fill="#f8f8f6"/>
+<rect x="414" y="458" width="151.0" height="58" rx="22" fill="#f8f8f6"/>
+<rect x="340" y="478" width="120" height="44" rx="16" fill="#c9a96e"/>
+<!-- mattress and duvet -->
+<path d="M201.0,520 L599.0,520 L619.0,640 L181.0,640 Z" fill="url(#duvet)"/>
+<path d="M193.0,565 L607.0,565 L615.0,612 L185.0,612 Z" fill="#c9a96e"/>
+<rect x="181.0" y="640" width="438" height="22" fill="#e5e6ea"/>
+<rect x="185.0" y="662" width="430" height="16" fill="#000" opacity=".25"/>
+<!-- nightstands and lamps -->
+<rect x="95.0" y="520" width="80" height="110" rx="4" fill="#c9a96e"/><rect x="95.0" y="560" width="80" height="4" fill="#000" opacity=".15"/>
+<rect x="625.0" y="520" width="80" height="110" rx="4" fill="#c9a96e"/><rect x="625.0" y="560" width="80" height="4" fill="#000" opacity=".15"/>
+<circle cx="135.0" cy="455" r="70" fill="url(#glow)"/><circle cx="665.0" cy="455" r="70" fill="url(#glow)"/>
+<rect x="132.0" y="470" width="6" height="50" fill="#555"/><path d="M107.0,470 L163.0,470 L151.0,430 L119.0,430 Z" fill="#fbf3df"/>
+<rect x="662.0" y="470" width="6" height="50" fill="#555"/><path d="M637.0,470 L693.0,470 L681.0,430 L649.0,430 Z" fill="#fbf3df"/>
+<!-- rug -->
+<ellipse cx="400" cy="735" rx="255.0" ry="40" fill="#c9a96e" opacity=".35"/>
+</svg>
