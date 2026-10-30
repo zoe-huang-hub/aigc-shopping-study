@@ -195,3 +195,14 @@ body button.all-coffees-btn[aria-pressed="true"]:hover {
   .products .product-card > img { width: 120px !important; flex: 0 0 120px !important; height: 130px !important; max-height: 130px !important; }
   .products .product-copy { padding-left: 12px !important; min-width: 0; }
 }
+
+/* All-items view on laptop widths: keep the image inside its column so the text stays in the card */
+@media (min-width: 761px) {
+  .filtering-grid.show-all .product-card { display: grid !important; grid-template-columns: minmax(0, 44%) minmax(0, 56%) !important; }
+  .filtering-grid.show-all .product-card > img { width: 100% !important; min-width: 0; }
+  .filtering-grid.show-all .product-copy { min-width: 0; overflow-wrap: anywhere; padding-left: 10px !important; padding-right: 0 !important; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  .filtering-grid.show-all .product-card { grid-template-columns: minmax(0, 1fr) !important; }
+  .filtering-grid.show-all .product-copy { padding-left: 2px !important; }
+}
