@@ -27,15 +27,22 @@
   // ---------- clicks (capture phase, so page handlers still run afterwards) ----------
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest("button");
-    if (!btn || finished) return;
+    if (finished) return;
 
-    if (btn.id === "continueBtn") {
+    if (btn && btn.id === "continueBtn") {
       // Replace the prototype's alert: stop the page's own Continue handler and report instead.
       e.stopPropagation();
       e.preventDefault();
       if (!btn.disabled) finish();
       return;
     }
+
+    // The page closes open panels when the click lands outside them.
+    if (!e.target.closest(".about-item, .review-popup, .details-btn, .rating-btn")) {
+      document.querySelectorAll(".about-item.open").forEach(function (panel) { log("details_close", panel.id.replace("details-", "")); });
+      document.querySelectorAll(".review-popup.open").forEach(function (panel) { log("reviews_close", panel.id.replace("reviews-", "")); });
+    }
+    if (!btn) return;
 
     var product = btn.getAttribute("data-product");
     if (btn.classList.contains("details-btn")) {

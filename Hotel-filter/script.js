@@ -82,6 +82,14 @@ document.querySelectorAll(".close-reviews").forEach(btn => {
   });
 });
 
+// A click anywhere outside an open panel closes it.
+document.addEventListener("click", e => {
+  if (e.target.closest(".about-item, .review-popup, .details-btn, .rating-btn")) return;
+  closeAboutPanels();
+  closeReviewPanels();
+  document.querySelectorAll(".product-card").forEach(card => card.classList.remove("active-popup"));
+});
+
 let selectedChoice = null;
 document.querySelectorAll(".choice").forEach(btn => {
   btn.addEventListener("click", () => {
